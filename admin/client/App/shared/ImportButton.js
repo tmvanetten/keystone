@@ -107,9 +107,10 @@ export default class ImportButton extends React.Component {
 					title="Import your data"
 					isOpen={this.state.open}
 					onCancel={this.handleClose}
+					onClose={this.handleClose}
 					backdropClosesModal
 				>
-					<Modal.Header text="Import your data" onClose={this.handleClose}/>
+					<Modal.Header text="Import your data"/>
 					<section>
 						<div className="dropzone">
 							<Dropzone
