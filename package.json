@@ -64,6 +64,7 @@
     "multer": "0.1.8",
     "numeral": "2.0.6",
     "object-assign": "4.1.1",
+    "papaparse": "^4.3.5",
     "qs": "4.0.0",
     "queryfilter": "0.0.4",
     "range_check": "1.4.0",
@@ -125,7 +126,9 @@
     "watch": "1.0.2"
   },
   "browserify": {
-    "transform": ["browserify-shim"]
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "browserify-shim": {
     "tinymce": "global:tinymce",

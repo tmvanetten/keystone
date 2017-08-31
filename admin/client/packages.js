@@ -13,6 +13,7 @@ module.exports = [
 	'classnames',
 	'display-name',
 	'elemental',
+	'papaparse',
 	'expression-match',
 	'i',
 	'list-to-array',
