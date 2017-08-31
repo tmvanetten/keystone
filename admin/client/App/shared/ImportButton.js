@@ -2,9 +2,9 @@ import React from "react";
 import { Modal, Button } from "../elemental";
 import Dropzone from "react-dropzone";
 import Papa from "papaparse";
-import xhr from 'xhr';
+import { connect } from 'react-redux';
 
-export default class ImportButton extends React.Component {
+ class ImportButton extends React.Component {
 	state = {
 		open: false,
 		error: null,
@@ -16,15 +16,25 @@ export default class ImportButton extends React.Component {
 		const list = this.props.currentList;
 		const data = this.state.csvData[0];
 		const emptyForm = new FormData();
+		const nameField = list.nameField.path;
+		const newName = data[nameField];
 		const dataKeys = Object.keys(data);
-		const firstField = dataKeys[0];
 		for (let i=0; i< dataKeys.length; i+=1){
 			const key = dataKeys[i];
 			emptyForm.append(key, data[key]);
 		}
 		emptyForm.append('fields', data);
-		emptyForm.append("name", data[firstField]);
-		emptyForm.append("slug", data[firstField]);
+		const currentPath = this.props.currentList.path;
+		const currentData = this.props.listData[currentPath];
+		let itemID = null;
+		const items = currentData.items.results;
+		for (let i=0; i<items.length; i+=1){
+			if(items[i].name === newName){
+				itemID = items[i].id;
+			}
+		}
+		if(!itemID){
+
 		list.createItem(emptyForm, (err, data) => {
 			if (data) {
 					this.handleClose();
@@ -33,6 +43,17 @@ export default class ImportButton extends React.Component {
 				console.log(err);
 			}
 		});
+		} else {
+
+		list.updateItem(itemID, emptyForm, (err, data) => {
+			if (data) {
+					this.handleClose();
+			}
+			if(err){
+				console.log(err);
+			}
+		});
+		}
 	}
 
 	getFieldData = () => {
@@ -246,3 +267,7 @@ export default class ImportButton extends React.Component {
 		);
 	}
 }
+
+export default connect(state => ({
+	listData: state.lists.data,
+}))(ImportButton);
