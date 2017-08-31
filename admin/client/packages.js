@@ -30,6 +30,7 @@ module.exports = [
 	'react-dnd',
 	'react-dom',
 	'react-images',
+	'react-dropzone',
 	'react-redux',
 	'react-router-redux',
 	'react-router',

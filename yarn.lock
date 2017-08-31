@@ -335,6 +335,10 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
+attr-accept@^1.0.3:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-1.1.0.tgz#b5cd35227f163935a8f1de10ed3eba16941f6be6"
+
 aws-sign2@~0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.6.0.tgz#14342dd38dbcc94d0e5b87d763cd63612c0e794f"
@@ -5133,7 +5137,7 @@ promise@^7.0.3, promise@^7.0.4, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.7:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -5372,6 +5376,13 @@ react-dom@15.4.2:
 react-domify@0.2.6:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/react-domify/-/react-domify-0.2.6.tgz#570d3a15cfc9d1fb2f464ccde1236fc5852e49bc"
+
+react-dropzone@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-4.1.0.tgz#f8401d78fb886e1a5393c059149cd63852033aef"
+  dependencies:
+    attr-accept "^1.0.3"
+    prop-types "^15.5.7"
 
 react-engine@4.3.0:
   version "4.3.0"
