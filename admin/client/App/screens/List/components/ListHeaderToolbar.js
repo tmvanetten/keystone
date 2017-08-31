@@ -5,6 +5,7 @@ import {
 	InlineGroupSection as Section,
 	ResponsiveText,
 } from '../../../elemental';
+import ImportButton from '../../../shared/ImportButton';
 import theme from '../../../../theme';
 
 import ListColumnsForm from './ListColumnsForm';
@@ -117,6 +118,13 @@ function ListHeaderToolbar ({
 							/>
 						</ButtonDivider>
 					</Section>
+					{createIsAvailable && <Section aphroditeStyles={classes.create}>
+						<ButtonDivider>
+							<ImportButton
+								currentList={list}
+							/>
+						</ButtonDivider>
+					</Section>}
 					{createIsAvailable && <Section aphroditeStyles={classes.create}>
 						<ButtonDivider>
 							<CreateButton
