@@ -12,7 +12,30 @@ export default class ImportButton extends React.Component {
 		fieldData: null
 	};
 
-	getFieldData(){
+	applyCSV = () => {
+		const list = this.props.currentList;
+		const data = this.state.csvData[0];
+		const emptyForm = new FormData();
+		const dataKeys = Object.keys(data);
+		const firstField = dataKeys[0];
+		for (let i=0; i< dataKeys.length; i+=1){
+			const key = dataKeys[i];
+			emptyForm.append(key, data[key]);
+		}
+		emptyForm.append('fields', data);
+		emptyForm.append("name", data[firstField]);
+		emptyForm.append("slug", data[firstField]);
+		list.createItem(emptyForm, (err, data) => {
+			if (data) {
+					this.handleClose();
+			}
+			if(err){
+				console.log(err);
+			}
+		});
+	}
+
+	getFieldData = () => {
 		const { currentList } = this.props;
 		let titleMap = {};
 		let isRelationship = {}
@@ -150,10 +173,14 @@ export default class ImportButton extends React.Component {
 		const actions = [
 			<Button type="primary" onClick={this.handleClose}>
 				Cancel
-			</Button>
+			</Button>,
 			// This is the button responsible for pushing the data to the server.
-			// TODO: Fix this
-			// <BulkUpdateButton resource={this.props.resource} CSVData={csvData} clickAction={this.handleClose} disabled={!csvData} />,
+			<Button
+					type="primary"
+					onClick={this.applyCSV}
+			>
+					Apply
+			</Button>
 		];
 		const dropZoneStyle = {
 			display: "flex",
