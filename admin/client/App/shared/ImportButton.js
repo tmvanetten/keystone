@@ -10,6 +10,16 @@ export default class ImportButton extends React.Component {
 		csvData: null
 	};
 
+	generateTitleMap(){
+		const { currentList } = this.props;
+		let titleMap = {};
+		for (let i=0; i< currentList.columns.length; i+=1){
+			const col = currentList.columns[i];
+			titleMap[col.title] = col.path;
+		}
+		return titleMap;
+	}
+
 	// The file is being parsed and translated after being dropped (or opened).
 	onDrop = acceptedFiles => {
 		const file = acceptedFiles[0];
@@ -26,28 +36,32 @@ export default class ImportButton extends React.Component {
 				for (let i = 0; i < data.length; i += 1) {
 					const row = data[i];
 					const translatedRow = {};
-					const keys = Object.keys(row);
+					const rowKeys = Object.keys(row);
 					let emptyFields = 0;
-					const sources = [];
-					for (let j = 0; j < keys.length; j += 1) {
-						const label = keys[j];
-						// In case of missing label configureation, use the labels themselves as REST nodes.
-						if (self.props.labelMap.hasOwnProperty(label)) {
-							const source = self.props.labelMap[label];
-							sources.push(source);
-							translatedRow[source] = row[label];
+					const paths = [];
+					const titleMap = self.generateTitleMap()
+					console.log(titleMap);
+					for (let j = 0; j < rowKeys.length; j += 1) {
+						const title = rowKeys[j];
+						// In case of missing title configuration, use the titles themselves as paths.
+						if (titleMap.hasOwnProperty(title)) {
+							const path = titleMap[title];
+							paths.push(path);
+							translatedRow[path] = row[title];
 							// Count the number of empty properties.
-							if (!row[label]) {
+							if (!row[title]) {
 								emptyFields += 1;
 							}
 						}
 					}
 					// If all the properties are empty, ignore the line.
 					// CSV files commonly leave empty lines in the end of the document
-					if (emptyFields !== sources.length) {
+					if (emptyFields !== paths.length) {
 						translatedData.push(translatedRow);
 					}
 				}
+				console.log(result);
+				console.log(translatedData);
 				self.setState({
 					file,
 					csvData: translatedData
@@ -94,6 +108,8 @@ export default class ImportButton extends React.Component {
 		const paragraphStatus = file
 			? "File loaded! Press submit to apply changes."
 			: "Drop CSV file here, or click to select file to upload.";
+			console.log(this.props);
+			console.log('KEYSTONE', Keystone);
 		return (
 			<div>
 				<Button
