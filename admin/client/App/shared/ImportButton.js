@@ -3,13 +3,13 @@ import { Modal, Button } from "../elemental";
 import Dropzone from "react-dropzone";
 import Papa from "papaparse";
 import xhr from 'xhr';
-import async from 'async';
 
 export default class ImportButton extends React.Component {
 	state = {
 		open: false,
 		error: null,
-		csvData: null
+		csvData: null,
+		fieldData: null
 	};
 
 	getFieldData(){
@@ -17,19 +17,56 @@ export default class ImportButton extends React.Component {
 		let titleMap = {};
 		let isRelationship = {}
 		let relationshipData = {}
+		let errorsXHR = [];
+		let fetchList = [];
+		let fetchListMap = {};
 		for (let i=0; i< currentList.columns.length; i+=1){
 			const col = currentList.columns[i];
 			titleMap[col.title] = col.path;
 			if (col.field.type === 'relationship'){
 				isRelationship[col.path] = true;
+				fetchList.push(col.field.refList.path);
+				fetchListMap[col.field.refList.path] = col.path;
 			} else {
 				isRelationship[col.path] = false;
 			}
 		}
-		return {
+		const self = this;
+		const promises = fetchList.map(path =>{
+			const promise = new Promise(function(resolve, reject) {
+				var xmlRequest = new XMLHttpRequest();
+				xmlRequest.onreadystatechange = function() {
+						if (xmlRequest.readyState == 4) {
+								if (xmlRequest.status == 200)
+										resolve(xmlRequest.responseText);
+								else
+										reject(xmlRequest.statusText);
+						}
+				}
+				xmlRequest.open("GET", Keystone.adminPath + '/api/' + path, true);
+				xmlRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				xmlRequest.setRequestHeader("Accept", "application/json");
+				xmlRequest.send(null);
+		})
+		return promise.then(JSON.parse).then((result)=>{
+			let relationshipMap = {}
+			for (let i=0; i< result.results.length; i+=1){
+				const item = result.results[i];
+				relationshipMap[item.name] = item.id;
+			}
+			const realPath = fetchListMap[path];
+			relationshipData[realPath] = relationshipMap;
+			return result;
+		});
+		});
+				Promise.all(promises).then(function() {
+				self.setState({fieldData: {
 			titleMap,
-			isRelationship
-	}
+			isRelationship,
+			errorsXHR,
+			relationshipData
+	}})
+		});
 }
 
 	// The file is being parsed and translated after being dropped (or opened).
@@ -51,8 +88,7 @@ export default class ImportButton extends React.Component {
 					const rowKeys = Object.keys(row);
 					let emptyFields = 0;
 					const paths = [];
-					const fieldData = self.getFieldData()
-					console.log(fieldData);
+					const fieldData = self.state.fieldData;
 					const titleMap = fieldData.titleMap;
 					const isRelationShip = fieldData.isRelationship;
 					for (let j = 0; j < rowKeys.length; j += 1) {
@@ -69,7 +105,13 @@ export default class ImportButton extends React.Component {
 						}
 						// Check if the field is a relationship, and fix the data correspondingly
 						if(isRelationShip[path]){
-							console.log(path);
+							const relationshipLabel = translatedRow[path];
+							let realName = fieldData.relationshipData[path][relationshipLabel];
+							if (realName === undefined){
+								//TODO: ERROR HANDLING
+								realName= '';
+							}
+							translatedRow[path] = realName;
 						}
 					}
 					// If all the properties are empty, ignore the line.
@@ -96,6 +138,7 @@ export default class ImportButton extends React.Component {
 	};
 	handleOpen = () => {
 		this.setState({ open: true });
+		this.getFieldData();
 	};
 
 	handleClose = () => {
@@ -126,7 +169,6 @@ export default class ImportButton extends React.Component {
 			? "File loaded! Press submit to apply changes."
 			: "Drop CSV file here, or click to select file to upload.";
 			console.log(this.props);
-			console.log('KEYSTONE', Keystone);
 		return (
 			<div>
 				<Button
