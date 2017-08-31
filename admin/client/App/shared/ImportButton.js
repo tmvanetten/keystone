@@ -2,6 +2,8 @@ import React from "react";
 import { Modal, Button } from "../elemental";
 import Dropzone from "react-dropzone";
 import Papa from "papaparse";
+import xhr from 'xhr';
+import async from 'async';
 
 export default class ImportButton extends React.Component {
 	state = {
@@ -10,15 +12,25 @@ export default class ImportButton extends React.Component {
 		csvData: null
 	};
 
-	generateTitleMap(){
+	getFieldData(){
 		const { currentList } = this.props;
 		let titleMap = {};
+		let isRelationship = {}
+		let relationshipData = {}
 		for (let i=0; i< currentList.columns.length; i+=1){
 			const col = currentList.columns[i];
 			titleMap[col.title] = col.path;
+			if (col.field.type === 'relationship'){
+				isRelationship[col.path] = true;
+			} else {
+				isRelationship[col.path] = false;
+			}
 		}
-		return titleMap;
+		return {
+			titleMap,
+			isRelationship
 	}
+}
 
 	// The file is being parsed and translated after being dropped (or opened).
 	onDrop = acceptedFiles => {
@@ -39,19 +51,25 @@ export default class ImportButton extends React.Component {
 					const rowKeys = Object.keys(row);
 					let emptyFields = 0;
 					const paths = [];
-					const titleMap = self.generateTitleMap()
-					console.log(titleMap);
+					const fieldData = self.getFieldData()
+					console.log(fieldData);
+					const titleMap = fieldData.titleMap;
+					const isRelationShip = fieldData.isRelationship;
 					for (let j = 0; j < rowKeys.length; j += 1) {
 						const title = rowKeys[j];
 						// In case of missing title configuration, use the titles themselves as paths.
-						if (titleMap.hasOwnProperty(title)) {
 							const path = titleMap[title];
+						if (titleMap.hasOwnProperty(title)) {
 							paths.push(path);
 							translatedRow[path] = row[title];
 							// Count the number of empty properties.
 							if (!row[title]) {
 								emptyFields += 1;
 							}
+						}
+						// Check if the field is a relationship, and fix the data correspondingly
+						if(isRelationShip[path]){
+							console.log(path);
 						}
 					}
 					// If all the properties are empty, ignore the line.
@@ -60,7 +78,6 @@ export default class ImportButton extends React.Component {
 						translatedData.push(translatedRow);
 					}
 				}
-				console.log(result);
 				console.log(translatedData);
 				self.setState({
 					file,
