@@ -9,12 +9,7 @@ import { connect } from 'react-redux';
 		super(props);
 		let currentList = props.currentList;
 		if(!currentList){
-			for (let i=0; i< props.lists.length; i+=1){
-				if(props.lists[i].path === props.currentPath){
-					currentList = props.lists[i];
-					break;
-				}
-			}
+			currentList = props.lists.currentList;
 		}
 		this.state = {
 			open: false,
@@ -25,7 +20,7 @@ import { connect } from 'react-redux';
 			postDialog: false,
 			submitErrors: false,
 			postDialogText: '',
-			currentList: currentList,
+			currentList,
 		};
 	}
 
