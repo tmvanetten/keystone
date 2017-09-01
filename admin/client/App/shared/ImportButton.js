@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "../elemental";
+import { Modal, Button, Alert } from "../elemental";
 import Dropzone from "react-dropzone";
 import Papa from "papaparse";
 import { connect } from 'react-redux';
@@ -9,12 +9,19 @@ import { connect } from 'react-redux';
 		open: false,
 		error: null,
 		csvData: null,
-		fieldData: null
+		fieldData: null,
+		submitActive: false,
+		postDialog: false,
+		submitErrors: false,
+		postDialogText: '',
 	};
 
 	applyCSV = () => {
 		const list = this.props.currentList;
-		const data = this.state.csvData[0];
+		this.requestsLeft =  this.state.csvData.length;
+		this.submitErrors  = [];
+		for (let j=0; j< this.state.csvData.length; j+=1){
+		const data = this.state.csvData[j];
 		const emptyForm = new FormData();
 		const nameField = list.nameField.path;
 		const newName = data[nameField];
@@ -33,29 +40,34 @@ import { connect } from 'react-redux';
 				itemID = items[i].id;
 			}
 		}
-		if(!itemID){
 
+		if(!itemID){
 		list.createItem(emptyForm, (err, data) => {
-			if (data) {
-					this.handleClose();
-			}
-			if(err){
-				console.log(err);
-			}
+			this.requestCounter(data, err);
 		});
 		} else {
 
 		list.updateItem(itemID, emptyForm, (err, data) => {
-			if (data) {
-					this.handleClose();
-			}
-			if(err){
-				console.log(err);
-			}
+			this.requestCounter(data, err);
 		});
 		}
 	}
+	}
 
+	requestCounter = (data, err) => {
+		this.requestsLeft -= 1;
+		const leftReq = this.requestsLeft;
+		if(err){
+			console.log(err);
+			this.submitErrors.push(err);
+		}
+		if (leftReq === 0) {
+			const error = this.submitErrors.length > 0 ? 'Errors occured while submitting data.' : null;
+			const postDialogText = error ? error : 'Completed successfully.';
+			this.setState({submitErrors: error, postDialogText, postDialog: true});
+			this.handleClose();
+		}
+	}
 	getFieldData = () => {
 		const { currentList } = this.props;
 		let titleMap = {};
@@ -84,7 +96,7 @@ import { connect } from 'react-redux';
 								if (xmlRequest.status == 200)
 										resolve(xmlRequest.responseText);
 								else
-										reject(xmlRequest.statusText);
+										reject(self.showError('WARNING! Failed fetching related database entries!'));
 						}
 				}
 				xmlRequest.open("GET", Keystone.adminPath + '/api/' + path, true);
@@ -113,6 +125,10 @@ import { connect } from 'react-redux';
 		});
 }
 
+	handlePostDialogClose = () => {
+		// You can't close it.
+	}
+
 	// The file is being parsed and translated after being dropped (or opened).
 	onDrop = acceptedFiles => {
 		const file = acceptedFiles[0];
@@ -124,6 +140,7 @@ import { connect } from 'react-redux';
 			// Unfortunately every possible solution involves huge RAM usage anyways if the CSV is big
 			// In fact, stepping threw the rows and dispatching PUTs might make RAM usage worse
 			complete(result) {
+				let errorText = null;
 				const translatedData = [];
 				const data = result.data;
 				for (let i = 0; i < data.length; i += 1) {
@@ -152,7 +169,7 @@ import { connect } from 'react-redux';
 							const relationshipLabel = translatedRow[path];
 							let realName = fieldData.relationshipData[path][relationshipLabel];
 							if (realName === undefined){
-								//TODO: ERROR HANDLING
+								errorText = 'WARNING! References to other models will be omitted because of missing records!';
 								realName= '';
 							}
 							translatedRow[path] = realName;
@@ -164,21 +181,30 @@ import { connect } from 'react-redux';
 						translatedData.push(translatedRow);
 					}
 				}
-				console.log(translatedData);
 				self.setState({
 					file,
-					csvData: translatedData
+					csvData: translatedData,
+					error: errorText,
+					submitActive: true,
 				});
 			}
 		});
 	};
+
+	onPostModalButton = () => {
+		if(this.props.rerenderCallback){
+			this.props.rerenderCallback();
+		} else {
+			this.setState({postDialog: false});
+		}
+	}
 	onDropRejected = () => {
 		this.showError("File loading rejected.");
 	};
 
 	showError = error => {
 		// Shows a red error instead of instruction in case something goes wrong.
-		this.setState({ error });
+		this.setState({ error, submitActive: false });
 	};
 	handleOpen = () => {
 		this.setState({ open: true });
@@ -192,15 +218,18 @@ import { connect } from 'react-redux';
 	render() {
 		const { file, error, csvData } = this.state;
 		const actions = [
-			<Button type="primary" onClick={this.handleClose}>
+			<Button onClick={this.handleClose} key='actions-cancel' style={{marginLeft: 'auto'}}>
 				Cancel
 			</Button>,
 			// This is the button responsible for pushing the data to the server.
 			<Button
-					type="primary"
+					color="primary"
+					disabled = {!this.state.submitActive}
 					onClick={this.applyCSV}
+					key='actions-submit'
+					style={{marginLeft: '10px'}}
 			>
-					Apply
+					Submit
 			</Button>
 		];
 		const dropZoneStyle = {
@@ -208,7 +237,8 @@ import { connect } from 'react-redux';
 			justifyContent: "center",
 			padding: "10px",
 			textAlign: "center",
-			backgroundColor: "rgba(153,153,153,0.2)"
+			backgroundColor: "rgba(153,153,153,0.2)",
+			margin: '10px',
 		};
 		// Error/hint colors and texts are determined here
 		let paragraphColor = error ? "red" : "rgba(0,0,0,0.6)";
@@ -216,18 +246,16 @@ import { connect } from 'react-redux';
 		const paragraphStatus = file
 			? "File loaded! Press submit to apply changes."
 			: "Drop CSV file here, or click to select file to upload.";
-			console.log(this.props);
 		return (
 			<div>
 				<Button
-					type="primary"
+					color="primary"
 					onClick={this.handleOpen}
 					style={{ marginRight: "20px" }}
 				>
 					Import
 				</Button>
 				<Modal.Dialog
-					title="Import your data"
 					isOpen={this.state.open}
 					onCancel={this.handleClose}
 					onClose={this.handleClose}
@@ -262,6 +290,23 @@ import { connect } from 'react-redux';
 						</aside>
 					</section>
 					<Modal.Footer>{actions}</Modal.Footer>
+				</Modal.Dialog>
+				<Modal.Dialog
+					isOpen={this.state.postDialog}
+					onCancel={this.handlePostDialogClose}
+					onClose={this.handlePostDialogClose}
+					backdropClosesModal = {this.props.rerenderCallback ? false : true}
+				>
+								<Modal.Body>
+									<Alert color={this.state.submitErrors ? 'danger' : 'success'}>
+									<p>{this.state.postDialogText}</p>
+									</Alert>
+								</Modal.Body>
+								<Modal.Footer>
+									<Button style={{margin: 'auto'}} onClick={this.onPostModalButton}>
+										{ this.props.rerenderCallback ? 'Reload Data' : 'Close'}
+									</Button>
+								</Modal.Footer>
 				</Modal.Dialog>
 			</div>
 		);
