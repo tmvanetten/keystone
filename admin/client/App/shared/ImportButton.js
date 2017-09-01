@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 		super(props);
 		let currentList = props.currentList;
 		if(!currentList){
-			currentList = props.lists.currentList;
+			currentList = props.lists.data[props.currentPath];
 		}
 		this.state = {
 			open: false,
@@ -214,7 +214,8 @@ import { connect } from 'react-redux';
 		// Shows a red error instead of instruction in case something goes wrong.
 		this.setState({ error, submitActive: false });
 	};
-	handleOpen = () => {
+	handleOpen = (e) => {
+		e.preventDefault();
 		this.setState({ open: true });
 		this.getFieldData();
 	};
@@ -254,15 +255,26 @@ import { connect } from 'react-redux';
 		const paragraphStatus = file
 			? "File loaded! Press submit to apply changes."
 			: "Drop CSV file here, or click to select file to upload.";
-		return (
-			<div>
+
+		// Sometimes we need only an icon
+		const mainButton = (
 				<Button
 					color="primary"
 					onClick={this.handleOpen}
 					style={{ marginRight: "20px" }}
 				>
 					Import
-				</Button>
+				</Button>);
+				const mainIcon = (<a
+					onClick={this.handleOpen}
+					className='dashboard-group__list-create octicon octicon-cloud-upload'
+					style={{position: 'absolute', top: '36px'}}
+					title='Import'
+				>
+				</a>);
+		return (
+			<div className={this.props.mini ? 'dashboard-group__list-inner' : '' }>
+				{this.props.mini ? mainIcon: mainButton}
 				<Modal.Dialog
 					isOpen={this.state.open}
 					onCancel={this.handleClose}
