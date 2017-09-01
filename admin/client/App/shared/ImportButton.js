@@ -5,19 +5,32 @@ import Papa from "papaparse";
 import { connect } from 'react-redux';
 
  class ImportButton extends React.Component {
-	state = {
-		open: false,
-		error: null,
-		csvData: null,
-		fieldData: null,
-		submitActive: false,
-		postDialog: false,
-		submitErrors: false,
-		postDialogText: '',
-	};
+	constructor(props){
+		super(props);
+		let currentList = props.currentList;
+		if(!currentList){
+			for (let i=0; i< props.lists.length; i+=1){
+				if(props.lists[i].path === props.currentPath){
+					currentList = props.lists[i];
+					break;
+				}
+			}
+		}
+		this.state = {
+			open: false,
+			error: null,
+			csvData: null,
+			fieldData: null,
+			submitActive: false,
+			postDialog: false,
+			submitErrors: false,
+			postDialogText: '',
+			currentList: currentList,
+		};
+	}
 
 	applyCSV = () => {
-		const list = this.props.currentList;
+		const list = this.state.currentList;
 		this.requestsLeft =  this.state.csvData.length;
 		this.submitErrors  = [];
 		for (let j=0; j< this.state.csvData.length; j+=1){
@@ -31,7 +44,7 @@ import { connect } from 'react-redux';
 			emptyForm.append(key, data[key]);
 		}
 		emptyForm.append('fields', data);
-		const currentPath = this.props.currentList.path;
+		const currentPath = this.state.currentList.path;
 		const currentData = this.props.listData[currentPath];
 		let itemID = null;
 		const items = currentData.items.results;
@@ -69,7 +82,7 @@ import { connect } from 'react-redux';
 		}
 	}
 	getFieldData = () => {
-		const { currentList } = this.props;
+		const { currentList } = this.state;
 		let titleMap = {};
 		let isRelationship = {}
 		let relationshipData = {}
@@ -315,4 +328,5 @@ import { connect } from 'react-redux';
 
 export default connect(state => ({
 	listData: state.lists.data,
+	lists: state.lists,
 }))(ImportButton);
