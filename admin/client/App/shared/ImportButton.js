@@ -202,6 +202,7 @@ import { connect } from 'react-redux';
 	onPostModalButton = () => {
 		if(this.props.rerenderCallback){
 			this.props.rerenderCallback();
+			window.location.reload();
 		} else {
 			this.setState({postDialog: false});
 		}
