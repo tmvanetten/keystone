@@ -23,7 +23,7 @@ exports.borderRadius = {
 exports.color = {
 	appDanger: '#d64242',
 	appInfo: '#56cdfc',
-	appPrimary: '#42484F',
+	appPrimary: '#1385e5',
 	appSuccess: '#34c240',
 	appWarning: '#fa9f47',
 };
