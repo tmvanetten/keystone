@@ -133,7 +133,7 @@
 	transition: color 150ms;
 }
 .fx-page__header__button:hover {
-	color: #1385E5;
+	color: #42484F;
 }
 .fx-page__header__button:active {
 	transform: scale(0.9);
@@ -219,7 +219,7 @@
 	padding-right: 20px;
 }
 .fx-sidebar__section--active {
-	border-left-color: #1385E5;
+	border-left-color: #42484F;
 	background-color: rgba(0, 0, 0, 0.1);
 }
 .fx-sidebar__section__title {
@@ -259,15 +259,15 @@
 	outline: 0;
 	text-decoration: none;
 }
-.fx-sidebar__item:hover::before { border-left-color: #1385E5; }
-.fx-sidebar__item:focus::before { border-left-color: #1385E5; }
+.fx-sidebar__item:hover::before { border-left-color: #42484F; }
+.fx-sidebar__item:focus::before { border-left-color: #42484F; }
 .fx-sidebar__item--active {
-	background-color: #1385E5;
+	background-color: #42484F;
 	color: white;
 }
 .fx-sidebar__item--active:hover,
 .fx-sidebar__item--active:focus {
-	background-color: #1385E5;
+	background-color: #42484F;
 }
 
 /* WELCOME */
