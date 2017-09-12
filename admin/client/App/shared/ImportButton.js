@@ -282,7 +282,7 @@ import { connect } from 'react-redux';
 					onClose={this.handleClose}
 					backdropClosesModal
 				>
-					<Modal.Header text="Import your data"/>
+					<Modal.Header text={'Import your ' + list.plural}/>
 					<section>
 						<div className="dropzone">
 							<Dropzone
