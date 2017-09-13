@@ -66,7 +66,7 @@ describe('<List /> query param sagas', function () {
 			const size = 100;
 
 			const page = { index, size };
-			const pathname = `/keystone/${currentList.id}`;
+			const pathname = `/${Keystone.adminPath}/${currentList.id}`;
 			const query = {};
 			const location = { pathname, query };
 
