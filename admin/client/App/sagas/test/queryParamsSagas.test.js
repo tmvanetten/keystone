@@ -10,7 +10,7 @@ import { replace, push } from 'react-router-redux';
 describe('<List /> query param sagas', function () {
 	beforeEach(() => {
 		global.Keystone = {
-			adminPath: 'admin',
+			adminPath: '',
 		};
 	});
 	describe('* urlUpdate()', function () {
