@@ -8,6 +8,11 @@ import * as actions from '../../screens/List/constants.js';
 import { replace, push } from 'react-router-redux';
 
 describe('<List /> query param sagas', function () {
+	beforeEach(() => {
+		global.Keystone = {
+			adminPath: 'admin',
+		};
+	});
 	describe('* urlUpdate()', function () {
 		describe('Given a query object and a cache object', function () {
 			describe('If the query object sans search, is the same as the cache object sans search', function () {
