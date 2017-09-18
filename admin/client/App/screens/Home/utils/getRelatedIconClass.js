@@ -17,8 +17,10 @@ export default function getRelatedIconClass (string) {
 		{ icon: 'mail', sections: ['emails', 'enquiries'] },
 		{ icon: 'megaphone', sections: ['broadcasts', 'jobs', 'talks'] },
 		{ icon: 'organization', sections: ['contacts', 'customers', 'groups', 'members', 'people', 'speakers', 'teams', 'users'] },
-		{ icon: 'package', sections: ['boxes', 'items', 'packages', 'parcels'] },
+		{ icon: 'package', sections: ['boxes', 'items', 'packages', 'parcels', 'bookings', 'purchaseOrders', 'warehouseReceivings'] },
 		{ icon: 'tag', sections: ['tags'] },
+		{ icon: 'tools', sections: ['settings'] },
+		{ icon: 'credit-card', sections: ['invoices'] },
 	];
 	const classes = icons
 		.filter(obj => obj.sections.indexOf(string) !== -1)
