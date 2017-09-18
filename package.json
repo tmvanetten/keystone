@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/keystonejs/keystone.git"
+    "url": "https://d74ee3cdeccf0829f2dae3fb72860482ab9f33d3@github.com/tmvanetten/keystone.git"
   },
   "dependencies": {
     "async": "2.2.0",
