@@ -210,6 +210,8 @@ const ListView = React.createClass({
 				nodelete={currentList.nodelete}
 				noedit={currentList.noedit}
 				selectAllItemsLoading={selectAllItemsLoading}
+				list={listsByPath[this.props.params.listId]}
+				createIsAvailable={!this.props.currentList.nocreate}
 			/>
 		);
 	},
