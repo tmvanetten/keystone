@@ -87,13 +87,15 @@ import { connect } from 'react-redux';
 		for (let i=0; i< currentList.columns.length; i+=1){
 			const col = currentList.columns[i];
 			titleMap[col.title] = col.path;
-			if (col.field.type === 'relationship'){
-				isRelationship[col.path] = true;
-				fetchList.push(col.field.refList.path);
-				fetchListMap[col.field.refList.path] = col.path;
-			} else {
-				isRelationship[col.path] = false;
+			if(typeof col.field !== 'undefined'){
+				if (col.field.type === 'relationship'){
+					isRelationship[col.path] = true;
+					fetchList.push(col.field.refList.path);
+					fetchListMap[col.field.refList.path] = col.path;
+				} else {
+					isRelationship[col.path] = false;
 			}
+}
 		}
 		const self = this;
 		const promises = fetchList.map(path =>{
