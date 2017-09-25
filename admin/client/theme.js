@@ -46,7 +46,7 @@ theme.color = {
 	text:                '#1A1A1A',
 
 	// contextual
-	success:             '#34c240',
+	success:             '#9BEEA2',
 	create:              '#9BEEA2', // alias for success
 	primary:             '#1385e5',
 	info:                '#1385e5', // alias for primary
