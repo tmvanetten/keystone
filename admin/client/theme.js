@@ -41,15 +41,15 @@ theme.container = {
 
 theme.color = {
 	body:                '#fafafa',
-	link:                '#1385e5',
-	linkHover:           lighten('#1385e5', 10),
+	link:                '#1B3F5C',
+	linkHover:           lighten('#1B3F5C', 10),
 	text:                '#1A1A1A',
 
 	// contextual
 	success:             '#9BEEA2',
 	create:              '#9BEEA2', // alias for success
-	primary:             '#1385e5',
-	info:                '#1385e5', // alias for primary
+	primary:             '#1B3F5C',
+	info:                '#1B3F5C', // alias for primary
 	warning:             '#FA3',
 	danger:              '#d64242',
 	error:               '#d64242', // alias for danger
