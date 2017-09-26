@@ -49,7 +49,7 @@ theme.color = {
 	success:             '#56CC60',
 	create:              '#5EB864', // alias for success
 	primary:             '#2D2D2E',
-	info:                '#2D2D2E', // alias for primary
+	info:                '#0A6CA5', // alias for primary
 	warning:             '#FA3',
 	danger:              '#d64242',
 	error:               '#d64242', // alias for danger
