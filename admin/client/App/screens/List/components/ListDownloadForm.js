@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react';
 import assign from 'object-assign';
+import { connect } from 'react-redux';
+import xhr from 'xhr';
 import Popout from '../../../shared/Popout';
 import PopoutList from '../../../shared/Popout/PopoutList';
 import ListHeaderButton from './ListHeaderButton';
-import { LabelledControl, Form, FormField, SegmentedControl } from '../../../elemental';
-
+import { LabelledControl, Form, FormField, SegmentedControl, Modal, Button, Spinner } from '../../../elemental';
 import { downloadItems } from '../actions';
 const FORMAT_OPTIONS = [
 	{ label: 'CSV', value: 'csv' },
 	{ label: 'JSON', value: 'json' },
+	{ label: 'GSheets', value: 'sheets' },
 ];
 
 var ListDownloadForm = React.createClass({
@@ -21,6 +23,9 @@ var ListDownloadForm = React.createClass({
 		return {
 			format: FORMAT_OPTIONS[0].value,
 			isOpen: false,
+			isModalOpen: false,
+			downloadURL: null,
+			downloadData: null,
 			useCurrentColumns: true,
 			selectedColumns: this.getDefaultSelectedColumns(),
 		};
@@ -96,9 +101,34 @@ var ListDownloadForm = React.createClass({
 			selectedColumns: {},
 		});
 	},
+
+	modalClose () {
+		this.setState({ isModalOpen: false });
+	},
+
 	handleDownloadRequest () {
-		this.props.dispatch(downloadItems(this.state.format, Object.keys(this.state.selectedColumns)));
-		this.togglePopout(false);
+		if (this.state.format === FORMAT_OPTIONS[2].value) {
+			const { list, active } = this.props;
+			const columns = Object.keys(this.state.selectedColumns);
+			const url = list.getDownloadURL({
+				search: active.search,
+				filters: active.filters,
+				sort: active.sort,
+				columns: columns ? list.expandColumns(columns) : active.columns,
+				format: 'json',
+			});
+			xhr(url, (err, resp, body) => {
+				if (err) {
+					this.setState({ downloadErr: err });
+				} else {
+					this.setState({ downloadData: body });
+				}
+			});
+			this.setState({ isModalOpen: true, downloadURL: url, isOpen: false });
+		} else {
+			this.props.dispatch(downloadItems(this.state.format, Object.keys(this.state.selectedColumns)));
+			this.togglePopout(false);
+		}
 	},
 	renderColumnSelect () {
 		if (this.state.useCurrentColumns) return null;
@@ -185,9 +215,23 @@ var ListDownloadForm = React.createClass({
 						secondaryButtonAction={() => this.togglePopout(false)}
 						secondaryButtonLabel="Cancel" />
 				</Popout>
+				<Modal.Dialog isOpen={this.state.isModalOpen} onClose={this.modalClose} onCancel={this.modalClose} backdropClosesModal>
+					<Modal.Header text="Google Sheets Options"/>
+					<Modal.Body>
+						<p>PLACEHOLDER</p>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button style={{ marginLeft: 'auto' }} color="primary">
+							{this.state.downloadData
+								? 'Send'
+								: <Spinner />
+							}
+						</Button>
+					</Modal.Footer>
+				</Modal.Dialog>
 			</div>
 		);
 	},
 });
 
-module.exports = ListDownloadForm;
+module.exports = connect((state) => ({ active: state.active }))(ListDownloadForm);
