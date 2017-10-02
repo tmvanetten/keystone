@@ -125,7 +125,7 @@ var ListDownloadForm = React.createClass({
 		console.log('AUTHSTATE');
 		if (isSignedIn) {
 			console.log('SIGNED IN');
-			const { downloadData } = this.state;
+			const { downloadData, gSheetID } = this.state;
 			const dataInJSON = JSON.parse(downloadData);
 			let dataTable = [];
 			const columns = Object.keys(dataInJSON[0].fields);
@@ -138,7 +138,20 @@ var ListDownloadForm = React.createClass({
 				});
 				dataTable.push(rowArray);
 			});
-			console.log(dataTable);
+			const alphabet = 'abcdefghijklmnopqrstuvwxyz'.toUpperCase();
+			const fromCell = 'A1';
+			const toCell = `${alphabet.charAt(dataTable[0].length - 1)}${dataTable.length}`;
+			const range = `${fromCell}:${toCell}`;
+			gapi.client.sheets.spreadsheets.values.update({
+				spreadsheetId: gSheetID,
+				range: range,
+				majorDimension: 'ROWS',
+				valueInputOption: 'RAW',
+				values: dataTable,
+			}).then(res => {
+				console.log('WRITE DONE', res);
+			});
+			console.log(toCell);
 		} else {
 			gapi.auth2.getAuthInstance().signIn();
 		}
