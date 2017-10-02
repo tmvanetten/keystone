@@ -121,18 +121,44 @@ var ListDownloadForm = React.createClass({
 		this.setState({ gSheetID: ev.target.value });
 	},
 
+	updateSignInStatus (isSignedIn) {
+		console.log('AUTHSTATE');
+		if (isSignedIn) {
+			console.log('SIGNED IN');
+			const { downloadData } = this.state;
+			const dataInJSON = JSON.parse(downloadData);
+			let dataTable = [];
+			const columns = Object.keys(dataInJSON[0].fields);
+			dataTable.push(columns);
+			dataInJSON.forEach(row => {
+				let rowArray = [];
+				columns.forEach(field => {
+					const data = row.fields[field];
+					rowArray.push(data);
+				});
+				dataTable.push(rowArray);
+			});
+			console.log(dataTable);
+		} else {
+			gapi.auth2.getAuthInstance().signIn();
+		}
+	},
 	submitGSheet () {
 		const { gapiKey, gClientID } = this.state;
+		const TMPAPI = 'AIzaSyAsgjCqkDFeB-vEY4IrfE5wcSRoqEqaKeI';
+		const TMPID = '149238799397-25vivfkq3umlb5118be7gpq8amfv890b.apps.googleusercontent.com';
 		const discoveryDocs = ['https://sheets.googleapis.com/$discovery/rest?version=v4'];
-		const apiScopes = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+		const apiScopes = 'https://www.googleapis.com/auth/spreadsheets';
 		gapi.load('client:auth2', () => {
 			gapi.client.init({
-				apiKey: gapiKey,
-				clientId: gClientID,
+				apiKey: TMPAPI,
+				clientId: TMPID,
 				discoveryDocs: discoveryDocs,
 				scope: apiScopes,
 			}).then(() => {
 				console.log('INIT COMPLETE');
+				gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSignInStatus);
+				this.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 			}).catch(err => {
 				console.log(err);
 			});
