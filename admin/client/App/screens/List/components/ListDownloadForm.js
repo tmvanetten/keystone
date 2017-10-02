@@ -122,7 +122,21 @@ var ListDownloadForm = React.createClass({
 	},
 
 	submitGSheet () {
-		console.log(this.state);
+		const { gapiKey, gClientID } = this.state;
+		const discoveryDocs = ['https://sheets.googleapis.com/$discovery/rest?version=v4'];
+		const apiScopes = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+		gapi.load('client:auth2', () => {
+			gapi.client.init({
+				apiKey: gapiKey,
+				clientId: gClientID,
+				discoveryDocs: discoveryDocs,
+				scope: apiScopes,
+			}).then(() => {
+				console.log('INIT COMPLETE');
+			}).catch(err => {
+				console.log(err);
+			});
+		});
 	},
 
 	handleDownloadRequest () {
