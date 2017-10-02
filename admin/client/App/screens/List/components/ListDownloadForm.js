@@ -13,6 +13,8 @@ const FORMAT_OPTIONS = [
 	{ label: 'GSheets', value: 'sheets' },
 ];
 
+const GSHEET_ID_FILTER = /http[s]?:\/\/docs\.google\.com\/spreadsheets\/d\/(.+)\/.*/;
+
 var ListDownloadForm = React.createClass({
 	propTypes: {
 		activeColumns: PropTypes.array,
@@ -127,6 +129,11 @@ var ListDownloadForm = React.createClass({
 	updateSignInStatus (isSignedIn) {
 		if (isSignedIn) {
 			const { downloadData, gSheetID } = this.state;
+			const ID_FILTER_MATCH = gSheetID.match(GSHEET_ID_FILTER);
+			let sheetID = gSheetID;
+			if (ID_FILTER_MATCH !== null) {
+				sheetID = ID_FILTER_MATCH[1];
+			}
 			const dataInJSON = JSON.parse(downloadData);
 			let dataTable = [];
 			const columns = Object.keys(dataInJSON[0].fields);
@@ -142,7 +149,7 @@ var ListDownloadForm = React.createClass({
 			const fromCell = 'A1';
 			const range = `${fromCell}`;
 			gapi.client.sheets.spreadsheets.values.update({
-				spreadsheetId: gSheetID,
+				spreadsheetId: sheetID,
 				range: range,
 				majorDimension: 'ROWS',
 				valueInputOption: 'RAW',
@@ -313,7 +320,7 @@ var ListDownloadForm = React.createClass({
 							<FormField label="Client ID">
 								<FormInput type="text" placeholder="Your Client ID here" value={this.state.gClientID} onChange={this.onGClientID} />
 							</FormField>
-							<FormField label="Google Sheet ID">
+							<FormField label="Google Sheet URL or ID">
 								<FormInput type="text" placeholder="Your Google Sheet here" value={this.state.gSheetID} onChange={this.onGSheetID}/>
 							</FormField>
 						</Form>
