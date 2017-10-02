@@ -5,7 +5,7 @@ import xhr from 'xhr';
 import Popout from '../../../shared/Popout';
 import PopoutList from '../../../shared/Popout/PopoutList';
 import ListHeaderButton from './ListHeaderButton';
-import { LabelledControl, Form, FormField, FormInput, SegmentedControl, Modal, Button, Spinner } from '../../../elemental';
+import { LabelledControl, Form, FormField, FormInput, SegmentedControl, Modal, Button, Spinner, Alert } from '../../../elemental';
 import { downloadItems } from '../actions';
 const FORMAT_OPTIONS = [
 	{ label: 'CSV', value: 'csv' },
@@ -29,6 +29,9 @@ var ListDownloadForm = React.createClass({
 			gapiKey: '',
 			gClientID: '',
 			gSheetID: '',
+			gSheetSendState: 'loading',
+			gSheetStatus: 'none',
+			gSheetError: null,
 			useCurrentColumns: true,
 			selectedColumns: this.getDefaultSelectedColumns(),
 		};
@@ -122,9 +125,7 @@ var ListDownloadForm = React.createClass({
 	},
 
 	updateSignInStatus (isSignedIn) {
-		console.log('AUTHSTATE');
 		if (isSignedIn) {
-			console.log('SIGNED IN');
 			const { downloadData, gSheetID } = this.state;
 			const dataInJSON = JSON.parse(downloadData);
 			let dataTable = [];
@@ -147,7 +148,11 @@ var ListDownloadForm = React.createClass({
 				valueInputOption: 'RAW',
 				values: dataTable,
 			}).then(res => {
-				console.log('WRITE DONE', res);
+				this.setState({ gSheetStatus: 'done', gSheetSendState: 'ready' });
+			}).catch(err => {
+				console.log(err);
+				const message = err.result.error.message;
+				this.setState({ gSheetStatus: 'error', gSheetError: message, gSheetSendState: 'ready' });
 			});
 		} else {
 			gapi.auth2.getAuthInstance().signIn();
@@ -155,22 +160,22 @@ var ListDownloadForm = React.createClass({
 	},
 	submitGSheet () {
 		const { gapiKey, gClientID } = this.state;
-		const TMPAPI = 'AIzaSyAsgjCqkDFeB-vEY4IrfE5wcSRoqEqaKeI';
-		const TMPID = '149238799397-25vivfkq3umlb5118be7gpq8amfv890b.apps.googleusercontent.com';
+		this.setState({ gSheetStatus: 'pending', gSheetSendState: 'submitting' });
 		const discoveryDocs = ['https://sheets.googleapis.com/$discovery/rest?version=v4'];
 		const apiScopes = 'https://www.googleapis.com/auth/spreadsheets';
 		gapi.load('client:auth2', () => {
 			gapi.client.init({
-				apiKey: TMPAPI,
-				clientId: TMPID,
+				apiKey: gapiKey,
+				clientId: gClientID,
 				discoveryDocs: discoveryDocs,
 				scope: apiScopes,
 			}).then(() => {
-				console.log('INIT COMPLETE');
 				gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSignInStatus);
 				this.updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 			}).catch(err => {
 				console.log(err);
+				const message = 'Please check your data.';
+				this.setState({ gSheetStatus: 'error', gSheetError: message, gSheetSendState: 'ready' });
 			});
 		});
 	},
@@ -188,9 +193,9 @@ var ListDownloadForm = React.createClass({
 			});
 			xhr(url, (err, resp, body) => {
 				if (err) {
-					this.setState({ downloadErr: err });
+					this.setState({ gSheetError: err });
 				} else {
-					this.setState({ downloadData: body });
+					this.setState({ downloadData: body, gSheetSendState: 'ready' });
 				}
 			});
 			this.setState({ isModalOpen: true, downloadURL: url, isOpen: false });
@@ -242,7 +247,19 @@ var ListDownloadForm = React.createClass({
 		);
 	},
 	render () {
-		const { useCurrentColumns } = this.state;
+		const { useCurrentColumns, gSheetStatus, gSheetError } = this.state;
+		let alertText = 'Fill in your data.';
+		let alertColor = 'info';
+		if (gSheetStatus === 'error') {
+			alertText = `An error occured. ${gSheetError}`;
+			alertColor = 'danger';
+		} else if (gSheetStatus === 'pending') {
+			alertText = 'Applying changes. Please wait.';
+			alertColor = 'warning';
+		} else if (gSheetStatus === 'done') {
+			alertText = 'All operations complete!';
+			alertColor = 'success';
+		}
 		return (
 			<div>
 				<ListHeaderButton
@@ -286,6 +303,9 @@ var ListDownloadForm = React.createClass({
 				<Modal.Dialog isOpen={this.state.isModalOpen} onClose={this.modalClose} onCancel={this.modalClose} backdropClosesModal>
 					<Modal.Header text="Google Sheets Options"/>
 					<Modal.Body>
+						<Alert color={alertColor}>
+							<p style={{ textAlign: 'center' }}>{alertText}</p>
+						</Alert>
 						<Form>
 							<FormField label="API Key">
 								<FormInput type="text" placeholder="Your API key here" value={this.state.gapiKey} onChange={this.onGAPIKey} />
@@ -299,8 +319,8 @@ var ListDownloadForm = React.createClass({
 						</Form>
 					</Modal.Body>
 					<Modal.Footer>
-						<Button style={{ marginLeft: 'auto' }} color="primary" disabled={!this.state.downloadData} onClick={this.submitGSheet}>
-							{this.state.downloadData
+						<Button style={{ marginLeft: 'auto' }} color="primary" disabled={this.state.gSheetSendState !== 'ready'} onClick={this.submitGSheet}>
+							{this.state.gSheetSendState === 'ready'
 								? 'Send'
 								: <Spinner />
 							}
