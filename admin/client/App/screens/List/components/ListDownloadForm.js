@@ -5,7 +5,7 @@ import xhr from 'xhr';
 import Popout from '../../../shared/Popout';
 import PopoutList from '../../../shared/Popout/PopoutList';
 import ListHeaderButton from './ListHeaderButton';
-import { LabelledControl, Form, FormField, SegmentedControl, Modal, Button, Spinner } from '../../../elemental';
+import { LabelledControl, Form, FormField, FormInput, SegmentedControl, Modal, Button, Spinner } from '../../../elemental';
 import { downloadItems } from '../actions';
 const FORMAT_OPTIONS = [
 	{ label: 'CSV', value: 'csv' },
@@ -26,6 +26,9 @@ var ListDownloadForm = React.createClass({
 			isModalOpen: false,
 			downloadURL: null,
 			downloadData: null,
+			gapiKey: '',
+			gClientID: '',
+			gSheetID: '',
 			useCurrentColumns: true,
 			selectedColumns: this.getDefaultSelectedColumns(),
 		};
@@ -106,6 +109,22 @@ var ListDownloadForm = React.createClass({
 		this.setState({ isModalOpen: false });
 	},
 
+	onGAPIKey (ev) {
+		this.setState({ gapiKey: ev.target.value });
+	},
+
+	onGClientID (ev) {
+		this.setState({ gClientID: ev.target.value });
+	},
+
+	onGSheetID (ev) {
+		this.setState({ gSheetID: ev.target.value });
+	},
+
+	submitGSheet () {
+		console.log(this.state);
+	},
+
 	handleDownloadRequest () {
 		if (this.state.format === FORMAT_OPTIONS[2].value) {
 			const { list, active } = this.props;
@@ -174,7 +193,6 @@ var ListDownloadForm = React.createClass({
 	},
 	render () {
 		const { useCurrentColumns } = this.state;
-
 		return (
 			<div>
 				<ListHeaderButton
@@ -218,10 +236,20 @@ var ListDownloadForm = React.createClass({
 				<Modal.Dialog isOpen={this.state.isModalOpen} onClose={this.modalClose} onCancel={this.modalClose} backdropClosesModal>
 					<Modal.Header text="Google Sheets Options"/>
 					<Modal.Body>
-						<p>PLACEHOLDER</p>
+						<Form>
+							<FormField label="API Key">
+								<FormInput type="text" placeholder="Your API key here" value={this.state.gapiKey} onChange={this.onGAPIKey} />
+							</FormField>
+							<FormField label="Client ID">
+								<FormInput type="text" placeholder="Your Client ID here" value={this.state.gClientID} onChange={this.onGClientID} />
+							</FormField>
+							<FormField label="Google Sheet ID">
+								<FormInput type="text" placeholder="Your Google Sheet here" value={this.state.gSheetID} onChange={this.onGSheetID}/>
+							</FormField>
+						</Form>
 					</Modal.Body>
 					<Modal.Footer>
-						<Button style={{ marginLeft: 'auto' }} color="primary">
+						<Button style={{ marginLeft: 'auto' }} color="primary" disabled={!this.state.downloadData} onClick={this.submitGSheet}>
 							{this.state.downloadData
 								? 'Send'
 								: <Spinner />
