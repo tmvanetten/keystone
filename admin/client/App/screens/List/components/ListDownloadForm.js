@@ -138,10 +138,8 @@ var ListDownloadForm = React.createClass({
 				});
 				dataTable.push(rowArray);
 			});
-			const alphabet = 'abcdefghijklmnopqrstuvwxyz'.toUpperCase();
 			const fromCell = 'A1';
-			const toCell = `${alphabet.charAt(dataTable[0].length - 1)}${dataTable.length}`;
-			const range = `${fromCell}:${toCell}`;
+			const range = `${fromCell}`;
 			gapi.client.sheets.spreadsheets.values.update({
 				spreadsheetId: gSheetID,
 				range: range,
@@ -151,7 +149,6 @@ var ListDownloadForm = React.createClass({
 			}).then(res => {
 				console.log('WRITE DONE', res);
 			});
-			console.log(toCell);
 		} else {
 			gapi.auth2.getAuthInstance().signIn();
 		}
