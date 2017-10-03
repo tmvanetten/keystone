@@ -165,6 +165,14 @@ ap@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/ap/-/ap-0.2.0.tgz#ae0942600b29912f0d2b14ec60c45e8f330b6110"
 
+aphrodite@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/aphrodite/-/aphrodite-1.2.0.tgz#c2f30bd1cdf6a550f4a29a0f1cf22ed10e825764"
+  dependencies:
+    asap "^2.0.3"
+    inline-style-prefixer "^3.0.1"
+    string-hash "^1.1.3"
+
 aphrodite@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/aphrodite/-/aphrodite-0.5.0.tgz#a4b9a8902662395d2702e70ac7a2b4ca66f25703"
@@ -867,9 +875,9 @@ babel-plugin-transform-strict-mode@^6.22.0:
     babel-runtime "^6.22.0"
     babel-types "^6.22.0"
 
-babel-polyfill@6.22.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.22.0.tgz#1ac99ebdcc6ba4db1e2618c387b2084a82154a3b"
+babel-polyfill@6.23.0:
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.23.0.tgz#8364ca62df8eafb830499f699177466c3b03499d"
   dependencies:
     babel-runtime "^6.22.0"
     core-js "^2.4.0"
@@ -1122,7 +1130,7 @@ bowser@^1.0.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-1.6.0.tgz#37fc387b616cb6aef370dab4d6bd402b74c5c54d"
 
-bowser@^1.6.0:
+bowser@^1.6.0, bowser@^1.7.3:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-1.7.3.tgz#504bdb43118ca8db9cbbadf28fd60f265af96e4f"
 
@@ -1423,6 +1431,10 @@ chai-nightwatch@~0.1.x:
   dependencies:
     assertion-error "1.0.0"
     deep-eql "0.1.3"
+
+chain-function@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/chain-function/-/chain-function-1.0.0.tgz#0d4ab37e7e18ead0bdc47b920764118ce58733dc"
 
 chalk@1.1.3, chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
@@ -1861,6 +1873,12 @@ css-in-js-utils@^1.0.3:
   dependencies:
     hyphenate-style-name "^1.0.2"
 
+css-in-js-utils@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/css-in-js-utils/-/css-in-js-utils-2.0.0.tgz#5af1dd70f4b06b331f48d22a3d86e0786c0b9435"
+  dependencies:
+    hyphenate-style-name "^1.0.2"
+
 css-select@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/css-select/-/css-select-1.2.0.tgz#2b3a110539c5355f1cd8d314623e870b121ec858"
@@ -2150,6 +2168,10 @@ doctrine@^1.2.2:
   dependencies:
     esutils "^2.0.2"
     isarray "^1.0.0"
+
+dom-helpers@^3.2.0:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.2.1.tgz#3203e07fed217bd1f424b019735582fc37b2825a"
 
 dom-serializer@0, dom-serializer@~0.1.0:
   version "0.1.0"
@@ -2754,6 +2776,18 @@ fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.9:
 fbjs@^0.8.12:
   version "0.8.14"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.14.tgz#d1dbe2be254c35a91e09f31f9cd50a40b2a0ed1c"
+  dependencies:
+    core-js "^1.0.0"
+    isomorphic-fetch "^2.1.1"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.9"
+
+fbjs@^0.8.16:
+  version "0.8.16"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
     core-js "^1.0.0"
     isomorphic-fetch "^2.1.1"
@@ -3423,6 +3457,13 @@ inline-style-prefixer@^2.0.0:
   dependencies:
     bowser "^1.0.0"
     hyphenate-style-name "^1.0.1"
+
+inline-style-prefixer@^3.0.1:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz#8551b8e5b4d573244e66a34b04f7d32076a2b534"
+  dependencies:
+    bowser "^1.7.3"
+    css-in-js-utils "^2.0.0"
 
 inline-style-prefixer@^3.0.6:
   version "3.0.7"
@@ -4950,9 +4991,9 @@ pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
 
-papaparse@^4.3.5:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-4.3.5.tgz#b6cdf5cae6fe9ec603b1be66f114a63ac645a036"
+papaparse@^4.3.6:
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-4.3.6.tgz#9566eda0ecab13afcb740a62381c699f486cb145"
 
 parent-require@^1.0.0:
   version "1.0.0"
@@ -5144,6 +5185,14 @@ prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.7:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
 
+prop-types@^15.5.6, prop-types@^15.5.8:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
 proxy-addr@~1.1.4:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-1.1.5.tgz#71c0ee3b102de3f202f3b64f608d173fcba1a918"
@@ -5313,7 +5362,7 @@ rc@~1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-addons-css-transition-group@15.4.2, react-addons-css-transition-group@^15.3.0:
+react-addons-css-transition-group@15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-addons-css-transition-group/-/react-addons-css-transition-group-15.4.2.tgz#b7828834dfa14229fe07750e331e8a8cb6fb7745"
   dependencies:
@@ -5377,9 +5426,9 @@ react-domify@0.2.6:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/react-domify/-/react-domify-0.2.6.tgz#570d3a15cfc9d1fb2f464ccde1236fc5852e49bc"
 
-react-dropzone@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-4.1.0.tgz#f8401d78fb886e1a5393c059149cd63852033aef"
+react-dropzone@^4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-4.1.3.tgz#25a0292c994541158d38155d08bb96e0aa5b83b2"
   dependencies:
     attr-accept "^1.0.3"
     prop-types "^15.5.7"
@@ -5394,13 +5443,14 @@ react-engine@4.3.0:
     lodash "^4.13.1"
     parent-require "^1.0.0"
 
-react-images@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/react-images/-/react-images-0.5.2.tgz#e1d537f9bcc71b8ba46b8d3ec984e0ee2ffd641b"
+react-images@0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/react-images/-/react-images-0.5.4.tgz#df7629800928e4b601154b3ecce95aee359ae098"
   dependencies:
     aphrodite "^0.5.0"
-    react-addons-css-transition-group "^15.3.0"
-    react-scrolllock "^1.0.1"
+    prop-types "^15.5.8"
+    react-scrolllock "^1.0.5"
+    react-transition-group "^1.1.3"
 
 react-input-autosize@^1.1.0:
   version "1.1.0"
@@ -5442,9 +5492,9 @@ react-router@3.0.2:
     loose-envify "^1.2.0"
     warning "^3.0.0"
 
-react-scrolllock@^1.0.1:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/react-scrolllock/-/react-scrolllock-1.0.8.tgz#4aee8581678327b96cb38a72b7a20e2610664e5a"
+react-scrolllock@^1.0.5:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-scrolllock/-/react-scrolllock-1.0.9.tgz#7c9c3c0cce2ed55042af2808b6483b85b121cdcb"
   dependencies:
     create-react-class "^15.5.2"
     prop-types "^15.5.10"
@@ -5455,6 +5505,16 @@ react-select@1.0.0-rc.1:
   dependencies:
     classnames "^2.2.4"
     react-input-autosize "^1.1.0"
+
+react-transition-group@^1.1.3:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-1.2.1.tgz#e11f72b257f921b213229a774df46612346c7ca6"
+  dependencies:
+    chain-function "^1.0.0"
+    dom-helpers "^3.2.0"
+    loose-envify "^1.3.1"
+    prop-types "^15.5.6"
+    warning "^3.0.0"
 
 react@15.4.2:
   version "15.4.2"
@@ -6189,6 +6249,10 @@ streamsearch@0.1.2:
 strict-uri-encode@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
+
+string-hash@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/string-hash/-/string-hash-1.1.3.tgz#e8aafc0ac1855b4666929ed7dd1275df5d6c811b"
 
 string-to-stream@1.1.0:
   version "1.1.0"
